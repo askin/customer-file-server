@@ -1,0 +1,7 @@
+version: '3'
+services:
+  customer-file-server:
+    build: .
+    image: askinozgur/customer-file-server
+    ports:
+      - "8080:8080"
