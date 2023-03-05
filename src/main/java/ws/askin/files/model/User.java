@@ -2,10 +2,7 @@ package ws.askin.files.model;
 
 import ws.askin.files.enums.UserRole;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -13,8 +10,12 @@ public class User {
 
     private @Id
     @GeneratedValue Long id;
+
+    @Column(unique=true)
     private String userName;
     private String fullName;
+
+    @Column(unique=true)
     private String email;
     private UserRole role;
 
