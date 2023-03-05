@@ -30,7 +30,7 @@ public class CustomerService {
         return this.customerRepository.save(customer);
     }
 
-    public Customer getCustomer(Long customerId) throws CustomerIsNotFoundException {
+    public Customer getCustomer(Long customerId) {
         return this.customerRepository
                 .findById(customerId)
                 .orElseThrow(() -> new CustomerIsNotFoundException(customerId));
