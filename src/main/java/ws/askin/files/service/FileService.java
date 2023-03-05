@@ -20,7 +20,7 @@ public class FileService {
         this.modelMapper = modelMapper;
     }
 
-    public File getFile(Long fileId) throws FileIsNotFoundException {
+    public File getFile(Long fileId) {
         return this.fileRepository
                 .findById(fileId)
                 .orElseThrow(() -> new FileIsNotFoundException(fileId));

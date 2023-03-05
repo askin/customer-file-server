@@ -20,13 +20,12 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public User checkUserIsAdmin(Long userId) throws UserIsNotFoundException, UserIsNotAuthorizedException {
+    public User checkUserIsAdmin(Long userId) {
 
         User user = this.userRepository
                 .findById(userId)
                 .orElseThrow(() -> new UserIsNotFoundException(userId));
 
-        ;
         if (Objects.isNull(userId)) {
             new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         } else {
