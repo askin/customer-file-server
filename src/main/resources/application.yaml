@@ -1,0 +1,21 @@
+spring:
+  h2:
+    console:
+      path: /h2-console
+      enabled: false
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+app:
+  api:
+    title: Customer Documents
+    version: 1.0.0
+    description: This is a demo Rest API Documentation for Customer Documents
+    base-package: ws.askin.files.controller
+    contact-name: Aşkın Özgür
+    contact-email: askin@askin.ws
+    contact-web: https://askin.ws
+    swagger:
+      enable: true
