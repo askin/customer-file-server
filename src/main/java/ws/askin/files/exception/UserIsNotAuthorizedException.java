@@ -1,6 +1,6 @@
 package ws.askin.files.exception;
 
-public class UserIsNotAuthorizedException extends Exception {
+public class UserIsNotAuthorizedException extends RuntimeException {
     public UserIsNotAuthorizedException(String msg) {
         super(msg);
     }

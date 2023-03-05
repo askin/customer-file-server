@@ -1,6 +1,6 @@
 package ws.askin.files.exception;
 
-public class UserIsNotFoundException extends Exception {
+public class UserIsNotFoundException extends RuntimeException {
     public UserIsNotFoundException(String msg) {
         super(msg);
     }

@@ -1,6 +1,6 @@
 package ws.askin.files.exception;
 
-public class CustomerIsNotFoundException extends Exception {
+public class CustomerIsNotFoundException extends RuntimeException {
     public CustomerIsNotFoundException(String msg) {
         super(msg);
     }

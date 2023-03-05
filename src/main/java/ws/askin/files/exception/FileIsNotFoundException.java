@@ -1,6 +1,6 @@
 package ws.askin.files.exception;
 
-public class FileIsNotFoundException extends Exception {
+public class FileIsNotFoundException extends RuntimeException {
     public FileIsNotFoundException(String msg) {
         super(msg);
     }
