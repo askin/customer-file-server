@@ -6,8 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ws.askin.files.dto.UserRequest;
 import ws.askin.files.dto.UserResponse;
-import ws.askin.files.exception.UserIsNotAuthorizedException;
-import ws.askin.files.exception.UserIsNotFoundException;
+import ws.askin.files.exception.*;
 import ws.askin.files.model.User;
 import ws.askin.files.service.AuthService;
 import ws.askin.files.service.UserService;
@@ -42,8 +41,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
-        // FIXME: uniq username and email
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest)
+            throws UserNameIsAlreadyTakenException, NullFieldException, EmailIsAlreadyTakenException {
         User user = this.userService.createUser(userRequest);
         UserResponse userResponse = this.modelMapper.map(user, UserResponse.class);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
