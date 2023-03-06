@@ -22,16 +22,16 @@ public class AuthService {
 
     public User checkUserIsAdmin(Long userId) {
 
+        if (Objects.isNull(userId)) {
+            throw new UserIsNotAuthorizedException();
+        }
+
         User user = this.userRepository
                 .findById(userId)
                 .orElseThrow(() -> new UserIsNotFoundException(userId));
 
-        if (Objects.isNull(userId)) {
-            new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } else {
-            if (!user.getRole().equals(UserRole.ADMIN)) {
-                throw new UserIsNotAuthorizedException(userId);
-            }
+        if (!user.getRole().equals(UserRole.ADMIN)) {
+            throw new UserIsNotAuthorizedException(userId);
         }
 
         return user;
