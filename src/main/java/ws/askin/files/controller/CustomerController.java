@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ws.askin.files.dto.CustomerRequest;
 import ws.askin.files.dto.CustomerResponse;
+import ws.askin.files.dto.CustomerUpdateRequest;
 import ws.askin.files.exception.CustomerIsNotFoundException;
 import ws.askin.files.exception.UserIsNotAuthorizedException;
 import ws.askin.files.exception.UserIsNotFoundException;
@@ -66,10 +67,20 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{customerId}")
-    public ResponseEntity deleteFile(@RequestHeader Long userId, @PathVariable Long customerId) {
+    public ResponseEntity deleteCustomer(@RequestHeader Long userId, @PathVariable Long customerId) {
         this.authService.checkUserIsAdmin(userId);
         this.customerService.deleteCustomer(customerId);
 
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @PutMapping("/{customerId}")
+    public ResponseEntity<CustomerResponse> updateCustomer(@RequestHeader Long userId, @PathVariable Long customerId, @RequestBody CustomerUpdateRequest customerUpdateRequest) {
+        this.authService.checkUserIsAdmin(userId);
+        Customer customer = this.customerService.updateCustomer(customerId, customerUpdateRequest);
+        CustomerResponse customerResponse = this.modelMapper.map(customer, CustomerResponse.class);
+
+        return new ResponseEntity(customerResponse, HttpStatus.OK);
+    }
+
 }

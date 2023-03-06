@@ -7,7 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ws.askin.files.dto.CustomerRequest;
+import ws.askin.files.dto.CustomerUpdateRequest;
 import ws.askin.files.exception.CustomerIsNotFoundException;
+import ws.askin.files.exception.NullFieldException;
 import ws.askin.files.model.Customer;
 import ws.askin.files.repository.CustomerRepository;
 
@@ -93,6 +95,60 @@ class CustomerServiceTest {
     void testDeleteCustomer_withNotExistId() {
         assertThrows(CustomerIsNotFoundException.class,
                 () -> this.customerService.deleteCustomer(100000L));
+    }
+
+    @Test
+    void testUpdateCustomer_withReadData() {
+        CustomerRequest customerRequest = new CustomerRequest();
+        String customerFullName = "CustomerName CustomerSurname";
+        String customerUpdatedFullName = "NewCustomerName NewCustomerSurname";
+        customerRequest.setFullName(customerFullName);
+        Customer savedCustomer = this.customerService.createCustomer(customerRequest);
+
+        Customer fetchedCustomer = this.customerService.getCustomer(savedCustomer.getId());
+
+        assertEquals(savedCustomer.getId(), fetchedCustomer.getId());
+        assertEquals(savedCustomer.getFullName(), fetchedCustomer.getFullName());
+
+        CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+        customerUpdateRequest.setDeleted(true);
+        customerUpdateRequest.setFullName(customerUpdatedFullName);
+
+        this.customerService.updateCustomer(savedCustomer.getId(), customerUpdateRequest);
+        Customer updatedCustomer = this.customerService.getCustomer(savedCustomer.getId());
+        assertEquals(true, updatedCustomer.isDeleted());
+        assertEquals(customerUpdatedFullName, updatedCustomer.getFullName());
+    }
+
+    @Test
+    void testUpdateCustomer_withNullData() {
+        CustomerRequest customerRequest = new CustomerRequest();
+        String customerFullName = "CustomerName CustomerSurname";
+        customerRequest.setFullName(customerFullName);
+        Customer savedCustomer = this.customerService.createCustomer(customerRequest);
+
+        Customer fetchedCustomer = this.customerService.getCustomer(savedCustomer.getId());
+
+        assertEquals(savedCustomer.getId(), fetchedCustomer.getId());
+        assertEquals(savedCustomer.getFullName(), fetchedCustomer.getFullName());
+
+        CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+
+        assertThrows(NullFieldException.class,
+                () -> this.customerService.updateCustomer(savedCustomer.getId(), customerUpdateRequest)
+        );
+    }
+
+    @Test
+    void testUpdateCustomer_withNotExistCustomer() {
+        CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+        customerUpdateRequest.setDeleted(true);
+        String customerUpdatedFullName = "NewCustomerName NewCustomerSurname";
+        customerUpdateRequest.setFullName(customerUpdatedFullName);
+
+        assertThrows(CustomerIsNotFoundException.class,
+                () -> this.customerService.updateCustomer(10000L, customerUpdateRequest)
+        );
     }
 
 
