@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ws.askin.files.dto.FileRequest;
 import ws.askin.files.dto.FileResponse;
+import ws.askin.files.dto.FileUpdateRequest;
 import ws.askin.files.exception.FileIsNotFoundException;
 import ws.askin.files.exception.UserIsNotAuthorizedException;
 import ws.askin.files.exception.UserIsNotFoundException;
@@ -71,5 +72,14 @@ public class FileController {
         this.fileService.deleteFile(fileId);
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping("/{fileId}")
+    public ResponseEntity<FileResponse> updateFile(@RequestHeader Long userId, @PathVariable Long fileId, @RequestBody FileUpdateRequest fileUpdateRequest) {
+        this.authService.checkUserIsAdmin(userId);
+        File file = this.fileService.updateFile(fileId, fileUpdateRequest);
+        FileResponse fileResponse = this.modelMapper.map(file, FileResponse.class);
+
+        return new ResponseEntity<>(fileResponse, HttpStatus.OK);
     }
 }

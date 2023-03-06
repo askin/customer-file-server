@@ -3,9 +3,12 @@ package ws.askin.files.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ws.askin.files.dto.FileRequest;
+import ws.askin.files.dto.FileUpdateRequest;
 import ws.askin.files.exception.CustomerIsNotFoundException;
 import ws.askin.files.exception.FileIsNotFoundException;
+import ws.askin.files.exception.NullFieldException;
 import ws.askin.files.exception.UserIsNotFoundException;
+import ws.askin.files.model.Customer;
 import ws.askin.files.model.File;
 import ws.askin.files.model.User;
 import ws.askin.files.repository.CustomerRepository;
@@ -13,6 +16,7 @@ import ws.askin.files.repository.FileRepository;
 import ws.askin.files.repository.UserRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class FileService {
@@ -59,5 +63,37 @@ public class FileService {
 
         file.setDeleted(true);
         this.fileRepository.save(file);
+    }
+
+    public File updateFile(Long fileId, FileUpdateRequest fileUpdateRequest) {
+        if (Objects.isNull(fileUpdateRequest)) {
+            throw new NullFieldException("fileUpdateRequest");
+        } else if (Objects.isNull(fileId)) {
+            throw new NullFieldException("fileId");
+        } else if (Objects.isNull(fileUpdateRequest.getDescription())) {
+            throw new NullFieldException("description");
+        } else if (Objects.isNull(fileUpdateRequest.getName())) {
+            throw new NullFieldException("name");
+        } else if (Objects.isNull(fileUpdateRequest.getCustomerId())) {
+            throw new NullFieldException("customerId");
+        }
+
+        File file = this.fileRepository
+                .findById(fileId)
+                .orElseThrow(() -> new FileIsNotFoundException(fileId));
+
+        if (file.getCustomer().getId() != fileUpdateRequest.getCustomerId()) {
+            Customer customer = this.customerRepository.
+                    findById(fileUpdateRequest.getCustomerId())
+                    .orElseThrow(() -> new CustomerIsNotFoundException(fileUpdateRequest.getCustomerId()));
+
+            file.setCustomer(customer);
+        }
+
+        file.setName(fileUpdateRequest.getName());
+        file.setDescription(fileUpdateRequest.getDescription());
+        file.setDeleted(fileUpdateRequest.isDeleted());
+
+        return this.fileRepository.save(file);
     }
 }
