@@ -7,9 +7,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ws.askin.files.dto.FileRequest;
+import ws.askin.files.dto.FileUpdateRequest;
 import ws.askin.files.enums.UserRole;
 import ws.askin.files.exception.CustomerIsNotFoundException;
 import ws.askin.files.exception.FileIsNotFoundException;
+import ws.askin.files.exception.NullFieldException;
 import ws.askin.files.repository.CustomerRepository;
 import ws.askin.files.repository.FileRepository;
 import ws.askin.files.model.File;
@@ -187,5 +189,109 @@ class FileServiceTest {
         assertEquals(fileDescription, deletedFile.getDescription());
         assertEquals(true, deletedFile.isDeleted());
 
+    }
+
+
+    @Test
+    void testUpdateFile_withNotExistId() {
+        Customer testCustomer = new Customer("Test Customer");
+        this.customerRepository.save(testCustomer);
+
+        FileUpdateRequest request = new FileUpdateRequest();
+        request.setDeleted(false);
+        request.setDescription("New Description");
+        request.setCustomerId(testCustomer.getId());
+        request.setName("New Name");
+
+        assertThrows(FileIsNotFoundException.class,
+                () -> this.fileService.updateFile(100000L, request));
+    }
+
+    @Test
+    void testUpdateFile_withNullDescription() {
+        User testUser = new User("testuser", "Test User", "test@askin.ws", UserRole.ADMIN);
+        this.userRepository.save(testUser);
+
+        Customer testCustomer = new Customer("Test Customer");
+        this.customerRepository.save(testCustomer);
+
+        String fileDescription = "File Description";
+        String fileName = "File Name";
+        String filePath = "https://askin.ws/test.file.pdf";
+
+        FileRequest fileRequest = new FileRequest();
+        fileRequest.setCustomerId(testCustomer.getId());
+        fileRequest.setDescription(fileDescription);
+        fileRequest.setName(fileName);
+        fileRequest.setPath(filePath);
+
+        File fetchedFile = this.fileService.createFile(fileRequest, testUser);
+
+        FileUpdateRequest request = new FileUpdateRequest();
+        request.setDeleted(false);
+        request.setCustomerId(testCustomer.getId());
+        request.setName("New Name");
+
+        assertThrows(NullFieldException.class,
+                () -> this.fileService.updateFile(fetchedFile.getId(), request));
+    }
+
+    @Test
+    void testUpdateFile_withNullFileName() {
+        User testUser = new User("testuser", "Test User", "test@askin.ws", UserRole.ADMIN);
+        this.userRepository.save(testUser);
+
+        Customer testCustomer = new Customer("Test Customer");
+        this.customerRepository.save(testCustomer);
+
+        String fileDescription = "File Description";
+        String fileName = "File Name";
+        String filePath = "https://askin.ws/test.file.pdf";
+
+        FileRequest fileRequest = new FileRequest();
+        fileRequest.setCustomerId(testCustomer.getId());
+        fileRequest.setDescription(fileDescription);
+        fileRequest.setName(fileName);
+        fileRequest.setPath(filePath);
+
+        File fetchedFile = this.fileService.createFile(fileRequest, testUser);
+
+        FileUpdateRequest request = new FileUpdateRequest();
+        request.setDeleted(false);
+        request.setDescription("New Description");
+        request.setCustomerId(testCustomer.getId());
+
+        assertThrows(NullFieldException.class,
+                () -> this.fileService.updateFile(fetchedFile.getId(), request));
+    }
+
+
+    @Test
+    void testUpdateFile_withNullCustomerId() {
+        User testUser = new User("testuser", "Test User", "test@askin.ws", UserRole.ADMIN);
+        this.userRepository.save(testUser);
+
+        Customer testCustomer = new Customer("Test Customer");
+        this.customerRepository.save(testCustomer);
+
+        String fileDescription = "File Description";
+        String fileName = "File Name";
+        String filePath = "https://askin.ws/test.file.pdf";
+
+        FileRequest fileRequest = new FileRequest();
+        fileRequest.setCustomerId(testCustomer.getId());
+        fileRequest.setDescription(fileDescription);
+        fileRequest.setName(fileName);
+        fileRequest.setPath(filePath);
+
+        File fetchedFile = this.fileService.createFile(fileRequest, testUser);
+
+        FileUpdateRequest request = new FileUpdateRequest();
+        request.setDeleted(false);
+        request.setDescription("New Description");
+        request.setName("New Name");
+
+        assertThrows(NullFieldException.class,
+                () -> this.fileService.updateFile(fetchedFile.getId(), request));
     }
 }

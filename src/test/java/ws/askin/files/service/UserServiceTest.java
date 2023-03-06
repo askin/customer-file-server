@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ws.askin.files.dto.UserRequest;
+import ws.askin.files.dto.UserUpdateRequest;
 import ws.askin.files.enums.UserRole;
 import ws.askin.files.exception.EmailIsAlreadyTakenException;
 import ws.askin.files.exception.NullFieldException;
@@ -155,5 +156,164 @@ class UserServiceTest {
     void testDeleteUser_withNotExistUserId() {
         assertThrows(UserIsNotFoundException.class,
                 () -> this.userService.deleteUser(1000000L));
+    }
+
+    @Test
+    void testUpdateUser_withCorrectValues() {
+        UserRequest userRequest = new UserRequest();
+
+        String uniqueUserName = "unique_user_name";
+        String newUniqueUserName = "new_unique_user_name";
+        String uniqueEmail = "uniqueemail@askin.ws";
+        String newUniqueEmail = "new_uniqueemail@askin.ws";
+        String newFullName = "New Normal User";
+
+        userRequest.setUserName(uniqueUserName);
+        userRequest.setEmail(uniqueEmail);
+        userRequest.setFullName("Normal User");
+
+        User newUser = this.userService.createUser(userRequest);
+
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setRole(UserRole.ADMIN);
+        userUpdateRequest.setDeleted(true);
+        userUpdateRequest.setEmail(newUniqueEmail);
+        userUpdateRequest.setUserName(newUniqueUserName);
+        userUpdateRequest.setFullName(newFullName);
+
+        User updatedUser = this.userService.updateUser(newUser.getId(), userUpdateRequest);
+        assertEquals(newUniqueEmail, updatedUser.getEmail());
+        assertEquals(newUniqueUserName, updatedUser.getUserName());
+        assertEquals(newFullName, updatedUser.getFullName());
+        assertEquals(true, updatedUser.isDeleted());
+        assertEquals(UserRole.ADMIN, updatedUser.getRole());
+    }
+
+    @Test
+    void testUpdateUser_withSameValues() {
+        UserRequest userRequest = new UserRequest();
+
+        String uniqueUserName = "unique_user_name";
+        String uniqueEmail = "uniqueemail@askin.ws";
+        String newFullName = "New Normal User";
+
+        userRequest.setUserName(uniqueUserName);
+        userRequest.setEmail(uniqueEmail);
+        userRequest.setFullName("Normal User");
+
+        User newUser = this.userService.createUser(userRequest);
+
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setRole(UserRole.ADMIN);
+        userUpdateRequest.setDeleted(true);
+        userUpdateRequest.setEmail(uniqueEmail);
+        userUpdateRequest.setUserName(uniqueUserName);
+        userUpdateRequest.setFullName(newFullName);
+
+        User updatedUser = this.userService.updateUser(newUser.getId(), userUpdateRequest);
+        assertEquals(uniqueEmail, updatedUser.getEmail());
+        assertEquals(uniqueUserName, updatedUser.getUserName());
+        assertEquals(newFullName, updatedUser.getFullName());
+        assertEquals(true, updatedUser.isDeleted());
+        assertEquals(UserRole.ADMIN, updatedUser.getRole());
+    }
+
+    @Test
+    void testUpdateUser_withNullRole() {
+        UserRequest userRequest = new UserRequest();
+
+        String uniqueUserName = "unique_user_name";
+        String uniqueEmail = "uniqueemail@askin.ws";
+        String newFullName = "New Normal User";
+
+        userRequest.setUserName(uniqueUserName);
+        userRequest.setEmail(uniqueEmail);
+        userRequest.setFullName("Normal User");
+
+        User newUser = this.userService.createUser(userRequest);
+
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setDeleted(true);
+        userUpdateRequest.setEmail(uniqueEmail);
+        userUpdateRequest.setUserName(uniqueUserName);
+        userUpdateRequest.setFullName(newFullName);
+
+        assertThrows(NullFieldException.class,
+                () -> this.userService.updateUser(newUser.getId(), userUpdateRequest)
+        );
+    }
+
+    @Test
+    void testUpdateUser_withNullEmail() {
+        UserRequest userRequest = new UserRequest();
+
+        String uniqueUserName = "unique_user_name";
+        String uniqueEmail = "uniqueemail@askin.ws";
+        String newFullName = "New Normal User";
+
+        userRequest.setUserName(uniqueUserName);
+        userRequest.setEmail(uniqueEmail);
+        userRequest.setFullName("Normal User");
+
+        User newUser = this.userService.createUser(userRequest);
+
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setRole(UserRole.ADMIN);
+        userUpdateRequest.setDeleted(true);
+        userUpdateRequest.setUserName(uniqueUserName);
+        userUpdateRequest.setFullName(newFullName);
+
+        assertThrows(NullFieldException.class,
+                () -> this.userService.updateUser(newUser.getId(), userUpdateRequest)
+        );
+    }
+
+    @Test
+    void testUpdateUser_withNullUserName() {
+        UserRequest userRequest = new UserRequest();
+
+        String uniqueUserName = "unique_user_name";
+        String uniqueEmail = "uniqueemail@askin.ws";
+        String newFullName = "New Normal User";
+
+        userRequest.setUserName(uniqueUserName);
+        userRequest.setEmail(uniqueEmail);
+        userRequest.setFullName("Normal User");
+
+        User newUser = this.userService.createUser(userRequest);
+
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setRole(UserRole.ADMIN);
+        userUpdateRequest.setDeleted(true);
+        userUpdateRequest.setEmail(uniqueEmail);
+        userUpdateRequest.setFullName(newFullName);
+
+        assertThrows(NullFieldException.class,
+                () -> this.userService.updateUser(newUser.getId(), userUpdateRequest)
+        );
+    }
+
+    @Test
+    void testUpdateUser_withNullFullName() {
+        UserRequest userRequest = new UserRequest();
+
+        String uniqueUserName = "unique_user_name";
+        String uniqueEmail = "uniqueemail@askin.ws";
+
+        userRequest.setUserName(uniqueUserName);
+        userRequest.setEmail(uniqueEmail);
+        userRequest.setFullName("Normal User");
+
+        User newUser = this.userService.createUser(userRequest);
+
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setRole(UserRole.ADMIN);
+        userUpdateRequest.setDeleted(true);
+        userUpdateRequest.setEmail(uniqueEmail);
+        userUpdateRequest.setUserName(uniqueUserName);
+
+        assertThrows(NullFieldException.class,
+                () -> this.userService.updateUser(newUser.getId(), userUpdateRequest)
+        );
     }
 }

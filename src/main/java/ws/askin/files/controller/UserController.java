@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ws.askin.files.dto.UserRequest;
 import ws.askin.files.dto.UserResponse;
+import ws.askin.files.dto.UserUpdateRequest;
 import ws.askin.files.model.User;
 import ws.askin.files.service.AuthService;
 import ws.askin.files.service.UserService;
@@ -51,5 +52,15 @@ public class UserController {
         this.userService.deleteUser(targetUserId);
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping("/{targetUserId}")
+    public ResponseEntity<UserResponse> updateUser(@RequestHeader Long userId, @PathVariable Long targetUserId, @RequestBody UserUpdateRequest userUpdateRequest) {
+        this.authService.checkUserIsAdmin(userId);
+
+        User user = this.userService.updateUser(targetUserId, userUpdateRequest);
+        UserResponse userResponse = this.modelMapper.map(user, UserResponse.class);
+
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 }
