@@ -8,6 +8,7 @@ public class UserResponse {
     private String fullName;
     private String email;
     private UserRole role;
+    private boolean isDeleted;
 
     public Long getId() {
         return id;
@@ -49,14 +50,23 @@ public class UserResponse {
         this.role = role;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
     @Override
     public String toString() {
-        return "UserResponseDTO{" +
+        return "UserResponse{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
                 ", role=" + role +
+                ", isDeleted=" + isDeleted +
                 '}';
     }
 }

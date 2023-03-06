@@ -51,4 +51,13 @@ public class FileService {
         file.setUser(user);
         return this.fileRepository.save(file);
     }
+
+    public void deleteFile(Long fileId) {
+        File file = this.fileRepository
+                .findById(fileId)
+                .orElseThrow(() -> new FileIsNotFoundException(fileId));
+
+        file.setDeleted(true);
+        this.fileRepository.save(file);
+    }
 }

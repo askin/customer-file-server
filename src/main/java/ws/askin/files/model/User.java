@@ -19,6 +19,8 @@ public class User {
     private String email;
     private UserRole role;
 
+    private boolean isDeleted;
+
     public User() {}
 
     public User(String userName, String fullName, String email, UserRole role) {
@@ -26,6 +28,15 @@ public class User {
         this.fullName = fullName;
         this.email = email;
         this.role = role;
+        this.isDeleted = false;
+    }
+
+    public User(String userName, String fullName, String email, UserRole role, boolean isDeleted) {
+        this.userName = userName;
+        this.fullName = fullName;
+        this.email = email;
+        this.role = role;
+        this.isDeleted = isDeleted;
     }
 
     @Override
@@ -36,6 +47,7 @@ public class User {
                 ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
                 ", role=" + role +
+                ", isDeleted=" + isDeleted +
                 '}';
     }
 
@@ -77,5 +89,13 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

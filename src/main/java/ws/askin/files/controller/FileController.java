@@ -64,4 +64,12 @@ public class FileController {
         return new ResponseEntity<>(fileResponse, HttpStatus.CREATED);
 
     }
+
+    @DeleteMapping("/{fileId}")
+    public ResponseEntity deleteFile(@RequestHeader Long userId, @PathVariable Long fileId) {
+        this.authService.checkUserIsAdmin(userId);
+        this.fileService.deleteFile(fileId);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

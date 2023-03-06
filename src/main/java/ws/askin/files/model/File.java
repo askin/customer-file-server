@@ -19,6 +19,8 @@ public class File {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    private boolean isDeleted = false;
+
     public File() {
     }
 
@@ -87,5 +89,13 @@ public class File {
                 ", user=" + user +
                 ", customer=" + customer +
                 '}';
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

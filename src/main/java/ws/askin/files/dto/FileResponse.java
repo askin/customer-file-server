@@ -10,6 +10,7 @@ public class FileResponse {
     private String path;
     private UserResponse user;
     private CustomerResponse customer;
+    private boolean isDeleted;
 
     public Long getId() {
         return id;
@@ -57,5 +58,13 @@ public class FileResponse {
 
     public void setCustomer(CustomerResponse customer) {
         this.customer = customer;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

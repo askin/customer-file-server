@@ -64,4 +64,12 @@ public class CustomerController {
         CustomerResponse customerResponse = this.modelMapper.map(customer, CustomerResponse.class);
         return new ResponseEntity<>(customerResponse, HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{customerId}")
+    public ResponseEntity deleteFile(@RequestHeader Long userId, @PathVariable Long customerId) {
+        this.authService.checkUserIsAdmin(userId);
+        this.customerService.deleteCustomer(customerId);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

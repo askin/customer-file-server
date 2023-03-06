@@ -9,6 +9,7 @@ public class Customer {
     private @Id
     @GeneratedValue Long id;
     private String fullName;
+    private boolean isDeleted = false;
 
     public Customer() {}
 
@@ -35,5 +36,13 @@ public class Customer {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

@@ -3,6 +3,7 @@ package ws.askin.files.dto;
 public class CustomerResponse {
     private Long id;
     private String fullName;
+    private boolean isDeleted;
 
     public Long getId() {
         return id;

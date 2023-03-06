@@ -6,6 +6,7 @@ public class UserRequest {
     private String userName;
     private String fullName;
     private String email;
+    private boolean isDeleted = false;
 
     public String getUserName() {
         return userName;
@@ -29,5 +30,13 @@ public class UserRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

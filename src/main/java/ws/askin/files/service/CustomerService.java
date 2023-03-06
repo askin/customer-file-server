@@ -2,7 +2,6 @@ package ws.askin.files.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 import ws.askin.files.dto.CustomerRequest;
 import ws.askin.files.exception.CustomerIsNotFoundException;
 import ws.askin.files.model.Customer;
@@ -34,5 +33,14 @@ public class CustomerService {
         return this.customerRepository
                 .findById(customerId)
                 .orElseThrow(() -> new CustomerIsNotFoundException(customerId));
+    }
+
+    public void deleteCustomer(Long customerId) {
+        Customer customer = this.customerRepository
+                .findById(customerId)
+                .orElseThrow(() -> new CustomerIsNotFoundException(customerId));
+
+        customer.setDeleted(true);
+        this.customerRepository.save(customer);
     }
 }

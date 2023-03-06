@@ -43,6 +43,15 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
+    public void deleteUser(Long userId) {
+        User user = this.userRepository
+                .findById(userId)
+                .orElseThrow(() -> new UserIsNotFoundException(userId));
+
+        user.setDeleted(true);
+        this.userRepository.save(user);
+    }
+
     private boolean validateUserRequest(UserRequest userRequest) {
         if (Objects.isNull(userRequest.getUserName())) {
             throw new NullFieldException("userName");
