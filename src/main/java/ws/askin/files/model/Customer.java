@@ -17,6 +17,10 @@ public class Customer {
         this.fullName = fullName;
     }
 
+    public Customer(String fullName) {
+        this.fullName = fullName;
+    }
+
     public Long getId() {
         return id;
     }

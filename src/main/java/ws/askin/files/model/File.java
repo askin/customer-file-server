@@ -76,4 +76,16 @@ public class File {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
+    @Override
+    public String toString() {
+        return "File{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                ", user=" + user +
+                ", customer=" + customer +
+                '}';
+    }
 }
