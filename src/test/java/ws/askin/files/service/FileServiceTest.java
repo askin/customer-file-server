@@ -156,7 +156,7 @@ class FileServiceTest {
     }
 
     @Test
-    void createFile_withRealCustomer__() {
+    void testDeleteFile_withRealData() {
         User testUser = new User("testuser", "Test User", "test@askin.ws", UserRole.ADMIN);
         this.userRepository.save(testUser);
 
