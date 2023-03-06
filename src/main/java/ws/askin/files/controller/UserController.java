@@ -29,8 +29,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getUsers(@RequestHeader Long userId)
-            throws UserIsNotFoundException, UserIsNotAuthorizedException {
+    public ResponseEntity<List<UserResponse>> getUsers(@RequestHeader Long userId) {
         this.authService.checkUserIsAdmin(userId);
         List<User> allUsers = this.userService.getAllUsers();
         List<UserResponse> response = allUsers.stream()
@@ -41,8 +40,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest)
-            throws UserNameIsAlreadyTakenException, NullFieldException, EmailIsAlreadyTakenException {
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
         User user = this.userService.createUser(userRequest);
         UserResponse userResponse = this.modelMapper.map(user, UserResponse.class);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
