@@ -1,5 +1,7 @@
 package ws.askin.files.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/files")
+@Api(tags = "File Controller")
 public class FileController {
 
     private final AuthService authService;
@@ -33,6 +36,7 @@ public class FileController {
     }
 
     @GetMapping
+    @ApiOperation(value = "Get all files")
     public ResponseEntity<List<FileResponse>> getAllFiles(@RequestHeader Long userId)
             throws UserIsNotAuthorizedException, UserIsNotFoundException {
         this.authService.checkUserIsAdmin(userId);
@@ -46,6 +50,7 @@ public class FileController {
     }
 
     @GetMapping("/fileId")
+    @ApiOperation(value = "Get a file with Id")
     public ResponseEntity<FileResponse> getFile(@RequestHeader Long userId, @PathVariable Long fileId)
             throws UserIsNotAuthorizedException, UserIsNotFoundException, FileIsNotFoundException {
         this.authService.checkUserIsAdmin(userId);
@@ -56,6 +61,7 @@ public class FileController {
     }
 
     @PostMapping
+    @ApiOperation(value = "Create a file")
     public ResponseEntity<FileResponse> createFile(@RequestHeader Long userId, @RequestBody FileRequest fileRequest)
             throws UserIsNotAuthorizedException, UserIsNotFoundException {
         User user = this.authService.checkUserIsAdmin(userId);
@@ -67,6 +73,7 @@ public class FileController {
     }
 
     @DeleteMapping("/{fileId}")
+    @ApiOperation(value = "Delete a file with id")
     public ResponseEntity deleteFile(@RequestHeader Long userId, @PathVariable Long fileId) {
         this.authService.checkUserIsAdmin(userId);
         this.fileService.deleteFile(fileId);
@@ -75,6 +82,7 @@ public class FileController {
     }
 
     @PutMapping("/{fileId}")
+    @ApiOperation(value = "Update a file")
     public ResponseEntity<FileResponse> updateFile(@RequestHeader Long userId, @PathVariable Long fileId, @RequestBody FileUpdateRequest fileUpdateRequest) {
         this.authService.checkUserIsAdmin(userId);
         File file = this.fileService.updateFile(fileId, fileUpdateRequest);

@@ -1,5 +1,7 @@
 package ws.askin.files.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
+@Api(tags = "User Controller")
 public class UserController {
 
     private final UserService userService;
@@ -29,6 +32,7 @@ public class UserController {
     }
 
     @GetMapping
+    @ApiOperation(value = "Get all users")
     public ResponseEntity<List<UserResponse>> getUsers(@RequestHeader Long userId) {
         this.authService.checkUserIsAdmin(userId);
         List<User> allUsers = this.userService.getAllUsers();
@@ -40,6 +44,7 @@ public class UserController {
     }
 
     @PostMapping
+    @ApiOperation(value = "Create new user")
     public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
         User user = this.userService.createUser(userRequest);
         UserResponse userResponse = this.modelMapper.map(user, UserResponse.class);
@@ -47,6 +52,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{targetUserId}")
+    @ApiOperation(value = "Delete a user")
     public ResponseEntity deleteUser(@RequestHeader Long userId, @PathVariable Long targetUserId) {
         this.authService.checkUserIsAdmin(userId);
         this.userService.deleteUser(targetUserId);
@@ -55,6 +61,7 @@ public class UserController {
     }
 
     @PutMapping("/{targetUserId}")
+    @ApiOperation(value = "Update a user")
     public ResponseEntity<UserResponse> updateUser(@RequestHeader Long userId, @PathVariable Long targetUserId, @RequestBody UserUpdateRequest userUpdateRequest) {
         this.authService.checkUserIsAdmin(userId);
 

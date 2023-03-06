@@ -1,5 +1,7 @@
 package ws.askin.files.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/customers")
+@Api(tags="Customer Controller")
 public class CustomerController {
 
     private final AuthService authService;
@@ -32,6 +35,7 @@ public class CustomerController {
     }
 
     @GetMapping
+    @ApiOperation(value = "Get all customers")
     public ResponseEntity<List<CustomerResponse>> getAllCustomers(@RequestHeader Long userId)
             throws UserIsNotFoundException, UserIsNotAuthorizedException {
         this.authService.checkUserIsAdmin(userId);
@@ -45,6 +49,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{customerId}")
+    @ApiOperation(value = "Get a customer with Id")
     public ResponseEntity<CustomerResponse> getCustomer(@RequestHeader Long userId, @PathVariable Long customerId)
             throws UserIsNotFoundException, UserIsNotAuthorizedException, CustomerIsNotFoundException {
         this.authService.checkUserIsAdmin(userId);
@@ -56,6 +61,7 @@ public class CustomerController {
     }
 
     @PostMapping
+    @ApiOperation(value = "Create a customer")
     public ResponseEntity<CustomerResponse> createCustomer(@RequestHeader Long userId, @RequestBody CustomerRequest customerRequest)
             throws UserIsNotFoundException, UserIsNotAuthorizedException {
 
@@ -67,6 +73,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{customerId}")
+    @ApiOperation(value = "Delete a customer with Id")
     public ResponseEntity deleteCustomer(@RequestHeader Long userId, @PathVariable Long customerId) {
         this.authService.checkUserIsAdmin(userId);
         this.customerService.deleteCustomer(customerId);
@@ -75,6 +82,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{customerId}")
+    @ApiOperation(value = "Update a customer")
     public ResponseEntity<CustomerResponse> updateCustomer(@RequestHeader Long userId, @PathVariable Long customerId, @RequestBody CustomerUpdateRequest customerUpdateRequest) {
         this.authService.checkUserIsAdmin(userId);
         Customer customer = this.customerService.updateCustomer(customerId, customerUpdateRequest);
