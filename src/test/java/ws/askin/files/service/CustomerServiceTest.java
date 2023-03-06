@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ws.askin.files.dto.CustomerRequest;
+import ws.askin.files.exception.CustomerIsNotFoundException;
 import ws.askin.files.model.Customer;
 import ws.askin.files.repository.CustomerRepository;
 
@@ -70,4 +71,29 @@ class CustomerServiceTest {
         List<Customer> allCustomers = this.customerService.getAllCustomers();
         assertEquals(1, allCustomers.size());
     }
+
+    @Test
+    void testDeleteCustomer_withId() {
+        CustomerRequest customerRequest = new CustomerRequest();
+        String customerFullName = "CustomerName CustomerSurname";
+        customerRequest.setFullName(customerFullName);
+        Customer savedCustomer = this.customerService.createCustomer(customerRequest);
+
+        Customer fetchedCustomer = this.customerService.getCustomer(savedCustomer.getId());
+
+        assertEquals(savedCustomer.getId(), fetchedCustomer.getId());
+        assertEquals(savedCustomer.getFullName(), fetchedCustomer.getFullName());
+
+        this.customerService.deleteCustomer(savedCustomer.getId());
+        Customer deletedCustomer = this.customerService.getCustomer(savedCustomer.getId());
+        assertEquals(true, deletedCustomer.isDeleted());
+    }
+
+    @Test
+    void testDeleteCustomer_withNotExistId() {
+        assertThrows(CustomerIsNotFoundException.class,
+                () -> this.customerService.deleteCustomer(100000L));
+    }
+
+
 }

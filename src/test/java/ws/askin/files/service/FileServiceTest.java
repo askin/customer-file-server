@@ -148,4 +148,44 @@ class FileServiceTest {
                 () -> this.fileService.createFile(fileRequest, testUser)
         );
     }
+
+    @Test
+    void testDeleteFile_withNotExistFileId() {
+        assertThrows(FileIsNotFoundException.class,
+                () -> this.fileService.deleteFile(1000000L));
+    }
+
+    @Test
+    void createFile_withRealCustomer__() {
+        User testUser = new User("testuser", "Test User", "test@askin.ws", UserRole.ADMIN);
+        this.userRepository.save(testUser);
+
+        Customer testCustomer = new Customer("Test Customer");
+        this.customerRepository.save(testCustomer);
+
+        String fileDescription = "File Description";
+        String fileName = "File Name";
+        String filePath = "https://askin.ws/test.file.pdf";
+
+        FileRequest fileRequest = new FileRequest();
+        fileRequest.setCustomerId(testCustomer.getId());
+        fileRequest.setDescription(fileDescription);
+        fileRequest.setName(fileName);
+        fileRequest.setPath(filePath);
+
+        File fetchedFile = this.fileService.createFile(fileRequest, testUser);
+
+        assertNotNull(fetchedFile.getId());
+        assertEquals(fileName, fetchedFile.getName());
+        assertEquals(fileDescription, fetchedFile.getDescription());
+
+        this.fileService.deleteFile(fetchedFile.getId());
+        File deletedFile = this.fileService.getFile(fetchedFile.getId());
+
+        assertNotNull(deletedFile.getId());
+        assertEquals(fileName, deletedFile.getName());
+        assertEquals(fileDescription, deletedFile.getDescription());
+        assertEquals(true, deletedFile.isDeleted());
+
+    }
 }

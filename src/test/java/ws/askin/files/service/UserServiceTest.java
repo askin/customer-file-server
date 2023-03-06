@@ -10,6 +10,7 @@ import ws.askin.files.dto.UserRequest;
 import ws.askin.files.enums.UserRole;
 import ws.askin.files.exception.EmailIsAlreadyTakenException;
 import ws.askin.files.exception.NullFieldException;
+import ws.askin.files.exception.UserIsNotFoundException;
 import ws.askin.files.exception.UserNameIsAlreadyTakenException;
 import ws.askin.files.model.User;
 import ws.askin.files.repository.UserRepository;
@@ -126,5 +127,33 @@ class UserServiceTest {
         assertThrows(EmailIsAlreadyTakenException.class,
                 () -> this.userService.createUser(userRequest2)
         );
+    }
+
+    @Test
+    void testDeleteUser_withRealUserID() {
+        UserRequest userRequest = new UserRequest();
+
+        String uniqueUserName = "unique_user_name";
+        String uniqueEmail = "uniqueemail@askin.ws";
+
+        userRequest.setUserName(uniqueUserName);
+        userRequest.setEmail(uniqueEmail);
+        userRequest.setFullName("Normal User");
+        User newUser = this.userService.createUser(userRequest);
+
+        this.userService.deleteUser(newUser.getId());
+        User deletedUser = userService.getUser(newUser.getId());
+
+        assertEquals(uniqueUserName, deletedUser.getUserName());
+        assertEquals(uniqueEmail, deletedUser.getEmail());
+        assertNotNull(deletedUser.getId());
+        assertEquals(UserRole.USER, deletedUser.getRole());
+        assertEquals(true, deletedUser.isDeleted());
+    }
+
+    @Test
+    void testDeleteUser_withNotExistUserId() {
+        assertThrows(UserIsNotFoundException.class,
+                () -> this.userService.deleteUser(1000000L));
     }
 }
